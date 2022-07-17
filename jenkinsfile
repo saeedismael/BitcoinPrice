@@ -12,7 +12,7 @@ pipeline{
 		stage('Build') {
 
 			steps {
-				sh ' docker build -t cyberpunks77/bitcoin-price:latest .'
+				sh 'sudo docker build -t cyberpunks77/bitcoin-price:latest .'
 			}
 		}
         stage('Login') {
@@ -24,14 +24,14 @@ pipeline{
 		stage('Push') {
 
 			steps {
-				sh ' docker push cyberpunks77/bitcoin-price:latest'
+				sh 'sudo docker push cyberpunks77/bitcoin-price:latest'
 			}
 		}
 	}
 
 	post {
 		always {
-			sh ' docker logout'
+			sh 'sudo docker logout'
 		}
 	}
 
