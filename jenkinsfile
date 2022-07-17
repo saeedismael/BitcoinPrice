@@ -1,32 +1,38 @@
-pipeline {
+pipeline{
 
-  agent any
+	agent any
 
-  environment {
+	environment {
 		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
 	}
 
-  stages {
+	stages {
 
-    stage('Login to dockerhub') {
+
+		stage('Build') {
 
 			steps {
-				sh 'echo $DOCKERHUB_CREDENTIALS_PSW |  docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+				sh 'sudo docker build -t cyberpunks77/bitcoin-price:latest .'
 			}
 		}
+        stage('Login') {
 
-    stage('Build Image') {
-      steps {
-        sh 'docker build -t bitcoin-price:latest .'
-      }
-    }
+			steps {
+				sh ' sudo echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+		stage('Push') {
 
-    stage('Push Image') {
-      steps {
-			sh 'docker push cyberpunks77/bitcoin-price'
-        }
-      }
-    }
-  }
+			steps {
+				sh 'sudo docker push cyberpunks77/bitcoin-price:latest'
+			}
+		}
+	}
 
+	post {
+		always {
+			sh 'sudo docker logout'
+		}
+	}
 
+}
